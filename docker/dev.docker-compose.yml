@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ../volumes/local-s3-mock/data:/data
+
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../volumes/local-vector-db:/chroma/chroma
+
+  ingestion-worker:
+    build:
+      context: ../services/ingestion-worker
+      dockerfile: Dockerfile
+    environment:
+      OBJECT_STORE_ENDPOINT: http://minio:9000
+      VECTOR_DB_HOST: http://chromadb:8000
+    volumes:
+      - ../volumes:/workspace/volumes
+    depends_on:
+      - minio
+      - chromadb
+
+  web-dashboard:
+    build:
+      context: ../services/web-dashboard
+      dockerfile: Dockerfile.dev
+    environment:
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../services/web-dashboard:/app
+      - /app/node_modules
+    depends_on:
+      - ingestion-worker

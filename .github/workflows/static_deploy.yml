@@ -1,0 +1,79 @@
+name: Deploy Static Hub & Model Artifacts to Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'services/web-dashboard/**'
+      - 'services/math-engine/**'
+      - 'data-schemas/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: services/web-dashboard/package-lock.json
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Setup Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install wasm-pack
+        run: cargo install wasm-pack
+
+      - name: Compile Rust Math Engine to WASM
+        working-directory: services/math-engine
+        run: wasm-pack build --target web --out-dir pkg
+
+      - name: Build Static Web Dashboard
+        working-directory: services/web-dashboard
+        run: |
+          npm ci
+          npm run build
+
+      - name: Inject Advanced Security Headers
+        run: |
+          cat > services/web-dashboard/out/_headers <<'HEADERS'
+          /*.html
+            Cross-Origin-Opener-Policy: same-origin
+            Cross-Origin-Embedder-Policy: require-corp
+          
+          /*.wasm
+            Cross-Origin-Opener-Policy: same-origin
+            Cross-Origin-Embedder-Policy: require-corp
+          HEADERS
+
+      - name: Prepare Deployment Artifact
+        run: |
+          rm -rf gh-pages-root
+          mkdir -p gh-pages-root/wasm-engine gh-pages-root/schemas
+          cp -R services/web-dashboard/out/. gh-pages-root/
+          cp -R services/math-engine/pkg/. gh-pages-root/wasm-engine/
+          cp -R data-schemas/. gh-pages-root/schemas/
+          touch gh-pages-root/.nojekyll
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages-root
+          publish_branch: gh-pages
+          force_orphan: true

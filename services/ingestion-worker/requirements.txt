@@ -1,0 +1,7 @@
+opencv-python-headless
+pandas
+python-magic
+sentence-transformers
+torch
+transformers
+unstructured
