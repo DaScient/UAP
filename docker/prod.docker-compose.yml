@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  api-gateway:
+    build:
+      context: ../services/api-gateway
+      dockerfile: Dockerfile
+    environment:
+      PORT: 8080
+      OBJECT_STORE_ENDPOINT: ${OBJECT_STORE_ENDPOINT}
+      VECTOR_DB_HOST: ${VECTOR_DB_HOST}
+      TRIANGULATION_NOTIFY_RADIUS_METERS: ${TRIANGULATION_NOTIFY_RADIUS_METERS:-50000}
+    restart: always
+
+  ingestion-worker:
+    build:
+      context: ../services/ingestion-worker
+      dockerfile: Dockerfile
+    command: ["python", "-m", "celery-worker"]
+    environment:
+      OBJECT_STORE_ENDPOINT: ${OBJECT_STORE_ENDPOINT}
+      VECTOR_DB_HOST: ${VECTOR_DB_HOST}
+      AWS_SQS_QUEUE_URL: ${AWS_SQS_QUEUE_URL}
+    restart: always
+
+  web-dashboard:
+    build:
+      context: ../services/web-dashboard
+      dockerfile: Dockerfile.dev
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+    restart: always

@@ -1,0 +1,99 @@
+{
+  "version": "1.0.0",
+  "canonical_contract": "uap.telemetry.v1.UapEvent",
+  "sources": [
+    {
+      "source": "NUFORC",
+      "stream_kind": "historical-report-archive",
+      "endpoint": "https://nuforc.org/",
+      "field_map": {
+        "event_id": "record_id",
+        "timestamp": "observed_at",
+        "location.latitude": "latitude",
+        "location.longitude": "longitude",
+        "location.altitude_meters": "altitude_meters",
+        "classification.assigned_shape": "shape",
+        "attachments": "media_urls"
+      },
+      "post_map_rules": [
+        "Normalize date fragments to ISO-8601 UTC where possible.",
+        "Convert state and country fields into standard ISO-friendly location metadata.",
+        "Preserve unstructured narrative text as provenance-rich attachment metadata when not directly represented in the proto."
+      ]
+    },
+    {
+      "source": "MUFON",
+      "stream_kind": "historical-report-archive",
+      "endpoint": "https://www.mufon.com/",
+      "field_map": {
+        "event_id": "cms_id",
+        "timestamp": "event_datetime",
+        "location.latitude": "geo.lat",
+        "location.longitude": "geo.lon",
+        "classification.assigned_shape": "sighting_shape",
+        "signature.kinematics_annotated": "narrative"
+      },
+      "post_map_rules": [
+        "Normalize legacy location names into WGS-84 coordinates before persistence.",
+        "Preserve case identifiers and investigator notes as provenance fields.",
+        "Map ambiguous shapes to SHAPE_UNKNOWN when the source taxonomy does not align cleanly."
+      ]
+    },
+    {
+      "source": "Enigma Labs",
+      "stream_kind": "mobile-app-telemetry",
+      "endpoint": "https://enigmalabs.io/",
+      "field_map": {
+        "event_id": "id",
+        "timestamp": "captured_at",
+        "location.latitude": "device.latitude",
+        "location.longitude": "device.longitude",
+        "attachments": "media",
+        "classification.confidence_score": "confidence_score",
+        "signature.kinematics_annotated": "sensor_metadata"
+      },
+      "post_map_rules": [
+        "Standardize smartphone telemetry and focal-length fields before downstream analysis.",
+        "Retain source confidence fields separately from internal anomaly scoring.",
+        "Normalize device orientation and motion metrics into structured provenance metadata."
+      ]
+    },
+    {
+      "source": "UAPx",
+      "stream_kind": "open-sensor-network",
+      "endpoint": "https://uapexpedition.org/",
+      "field_map": {
+        "event_id": "event_id",
+        "timestamp": "timestamp_utc",
+        "location.latitude": "station.latitude",
+        "location.longitude": "station.longitude",
+        "sensor_type": "sensor_type",
+        "attachments": "artifact_uris",
+        "signature.kinematics_annotated": "multispectral_parameters"
+      },
+      "post_map_rules": [
+        "Map multi-spectral camera parameters into attachment metadata and annotated kinematics fields.",
+        "Preserve station identifiers and calibration snapshots as provenance.",
+        "Support streaming ingestion where the source exposes continuous observation feeds."
+      ]
+    },
+    {
+      "source": "Sky360",
+      "stream_kind": "open-sensor-network",
+      "endpoint": "https://sky360.org/",
+      "field_map": {
+        "event_id": "uuid",
+        "timestamp": "detected_at",
+        "location.latitude": "site.lat",
+        "location.longitude": "site.lon",
+        "attachments": "capture_assets",
+        "signature.max_luminance_watts_per_sr": "radiance_peak"
+      },
+      "post_map_rules": [
+        "Align live sky-tracking station payloads to the canonical schema.",
+        "Preserve hardware metadata, camera parameters, and station health diagnostics.",
+        "Route raw captures and derived telemetry through the central ingestion pipeline."
+      ]
+    }
+  ]
+}

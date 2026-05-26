@@ -1,87 +1,117 @@
-# Legal Compliance Guidance
+# Legal Compliance and Data Ethics Guide
 
 ## Purpose
 
-This document defines the legal and ethical baseline for collecting, ingesting, processing, and publishing UAP-related data within this repository and any downstream deployments derived from it. The project is intended to support legitimate research, public-interest transparency, and responsible data stewardship. It is not intended to facilitate surveillance abuse, unlawful data acquisition, or the publication of material that would place contributors, witnesses, or third parties at avoidable risk.
+This guide defines the legal, ethical, and operational rules for contributors who wish to submit data, connect new sources, or expand the platform's ingestion capabilities. Because the repository may interact with sensitive aerospace, defence-adjacent, geospatial, or government-originated information, contributors must treat compliance as a mandatory entry condition for participation.
 
-## General compliance principles
+This document is a project policy baseline and not a substitute for legal advice. If a source, dataset, or operational idea raises material uncertainty, implementation must pause until a responsible maintainer or qualified advisor reviews it.
 
-All contributors should treat legal compliance as a design constraint rather than an after-the-fact review activity. Every ingestion path, storage workflow, and publication feature should be evaluated against the laws and regulations that govern the jurisdiction in which the data is collected, processed, stored, and displayed.
+## Core rule
 
-Contributors should assume that at least four categories of law may apply:
+No contributor may submit or integrate material that is plausibly classified, export-controlled, unlawfully obtained, or redistributed in violation of applicable law, source terms, or public-interest obligations.
 
-1. privacy and personal data protection law;
-2. copyright and database-right restrictions;
-3. terms-of-service and API licensing restrictions;
-4. export control, national security, and public-records limitations.
+## Submission screening procedure
 
-If there is any reasonable doubt about whether a proposed data source may be collected or redistributed, the data source should not be integrated until the concern has been resolved.
+Every proposed dataset, file collection, API integration, media archive, or witness submission workflow should be screened using the following sequence before code is merged or data is published.
 
-## Personal data and witness protection
+### 1. Provenance verification
 
-Witness submissions and observational records may contain names, contact details, precise home locations, device identifiers, or other information that can directly or indirectly identify an individual. Contributors must minimise the collection of personally identifiable information and must not publish such information unless there is a clear legal basis and explicit permission to do so.
+Contributors must identify the origin of the material and document how it was acquired. If the acquisition path cannot be explained clearly, the material must be rejected.
 
-At minimum, the implementation should be designed to support the following practices:
+Minimum provenance questions:
 
-- separation of public event data from private contact data;
-- redaction or generalisation of exact residential coordinates where appropriate;
-- retention limits for raw witness-submitted material;
-- deletion or correction workflows for submitted data;
-- auditability of moderation and publication decisions.
+- Who created or published the material?
+- Where was it obtained?
+- Under what terms is it made available?
+- Does the contributor have a lawful right to provide it to this project?
+- Is the material public, licensed, permitted, or merely leaked?
 
-If the platform later accepts submissions from jurisdictions subject to GDPR, UK GDPR, CCPA, or similar laws, maintainers should ensure that the deployed system includes appropriate notices, lawful-processing justifications, and subject-rights handling procedures.
+Any material described as leaked, unofficially obtained, anonymously sourced from restricted systems, or copied from access-controlled environments must be rejected.
 
-## Government and public-sector data
+### 2. Export-control screening
 
-Government-originated records may be public, restricted, licensed, delayed, or partially releasable depending on the issuing authority. Contributors must verify the legal status of each source before ingesting it. A source should not be treated as freely reusable merely because it is publicly reachable on the internet.
+Contributors must review whether the material could plausibly contain data subject to export-control regimes such as ITAR or EAR.
 
-Before integrating a government source, verify:
+Reject or escalate immediately if the submission includes or appears to include:
 
-- whether the records are public-domain, open-licensed, or otherwise redistributable;
-- whether rate limits, attribution rules, or downstream-use conditions apply;
-- whether the material contains sensitive infrastructure, defence, or personal information;
-- whether republication creates additional legal or ethical risk beyond linking to the source.
+- technical data about defence articles, weapons systems, guidance systems, targeting systems, propulsion, or military sensor packages;
+- controlled schematics, engineering drawings, performance envelopes, or subsystem specifications;
+- integration details for military avionics, radar, SIGINT, EW, or ISR platforms;
+- source documents marked with export-control legends, distribution statements, or restrictions on foreign access;
+- datasets whose release status is unclear but whose content appears to describe controlled defence capabilities.
 
-## Third-party content and media
+If a contributor is not certain whether a submission may be ITAR- or EAR-controlled, the correct action is to stop and escalate rather than guess.
 
-Images, videos, PDFs, and article excerpts may be protected by copyright even when they are widely circulated. The platform should prefer linking, metadata extraction, or permission-based use over wholesale republication where rights are uncertain.
+### 3. Classification and restricted-marking screening
 
-Where content is ingested for analysis rather than publication, the storage and display model should still be reviewed for compliance with applicable law and platform terms. Internal availability to contributors does not eliminate copyright or licensing obligations.
+Contributors must inspect source material for markings that indicate classified or otherwise restricted handling. Examples include classification banners, dissemination controls, caveats, handling notices, or watermarks.
 
-## API and terms-of-service compliance
+Reject and escalate any submission containing indicators such as:
 
-Every automated integration must respect the terms of the source system. Contributors must not bypass authentication boundaries, scrape prohibited content, evade rate limits, or misrepresent the project as an official government or institutional endpoint.
+- `CONFIDENTIAL`, `SECRET`, `TOP SECRET`, or equivalent national security labels;
+- caveats such as `NOFORN`, `FOUO`, `CUI`, `REL TO`, `ORCON`, or comparable national markings;
+- document watermarks, footer legends, or cover-page notices indicating restricted dissemination;
+- scan artefacts showing redaction patterns suggestive of partial release paired with unofficial reconstruction;
+- internal routing stamps, access-control identifiers, or repository paths suggesting non-public systems.
 
-Proposed integrations should document:
+The project must never attempt to “clean,” redact around, or normalise restricted markings in order to make a dataset acceptable. Material is either demonstrably lawful and public, or it is not accepted.
 
-- the source owner and access method;
-- any formal API terms or data-use policy;
-- authentication and quota expectations;
-- whether redistribution is permitted or restricted;
-- what attribution text, if any, must accompany downstream publication.
+### 4. Unlawfully obtained defence or government data
 
-## Security and operational handling
+Contributors must reject data that appears to come from unauthorised disclosures, compromised networks, scraped restricted portals, or contractual sources that do not permit redistribution.
 
-Compliance also depends on secure handling. Sensitive source credentials, unpublished datasets, and internal moderation notes must not be committed to the repository. Deployments should use standard secret-management practices and should enforce least-privilege access to administrative tooling.
+Immediate rejection conditions include:
 
-If the project later processes privileged or embargoed datasets, those datasets should be isolated from public publication workflows and governed by separate operational controls.
+- claims that the material was copied from military, intelligence, or contractor systems without authorisation;
+- records downloaded with personal credentials from portals that prohibit redistribution;
+- material obtained through hacking, credential sharing, scraping against source terms, or insider disclosure;
+- defence imagery, telemetry, or documentation with no verifiable public release chain.
 
-## Moderation and misinformation risk
+### 5. Privacy and safety screening
 
-Because UAP-related material can attract sensational or misleading claims, maintainers should ensure that publication layers distinguish clearly between raw reports, machine-generated classifications, analyst annotations, and verified evidence. The platform should not present speculative conclusions as established fact.
+The platform may receive witness submissions or media containing personal data. Contributors must minimise personally identifiable information and must not publish names, direct contact details, or precise home locations unless there is a clear lawful basis and explicit permission.
 
-Where possible, public displays should preserve provenance, confidence indicators, and caveats so that consumers understand the evidentiary quality of each record.
+The default expectation is data minimisation, provenance preservation, and careful redaction.
 
-## Contributor expectations
+## Required rejection workflow
 
-By contributing to this repository, contributors are expected to:
+If any of the above screens fail, the contributor or reviewer must:
 
-- use only data they are lawfully permitted to submit or process;
-- avoid adding integrations with unclear legal status;
-- preserve provenance and attribution requirements;
-- escalate material legal uncertainty before implementation or publication;
-- prioritise witness safety and privacy over dataset completeness.
+1. stop processing immediately;
+2. avoid copying the material into new files, commits, or issue comments;
+3. notify a maintainer with a minimal description of the concern;
+4. avoid public discussion of sensitive content while the review is pending;
+5. permanently reject the material if lawful public status cannot be established.
+
+The repository must not become a laundering path for dubious or restricted data simply because it is technically possible to ingest it.
+
+## Contributor code of conduct for data ethics
+
+Every contributor is expected to follow these ethical rules:
+
+- act in good faith and preserve scientific integrity;
+- distinguish between evidence, inference, and speculation;
+- avoid sensational framing that overstates the evidentiary value of a record;
+- protect witness privacy and avoid doxxing, coercive outreach, or intrusive collection;
+- preserve provenance and source context for every transformed record;
+- avoid introducing integrations that encourage scraping, unlawful acquisition, or evasive access patterns;
+- report legal or ethical uncertainty early rather than proceeding optimistically.
+
+## Open-source contribution expectations
+
+Before submitting a pull request that adds a source, connector, or ingestion path, contributors should document:
+
+- the legal basis for access and reuse;
+- any source license or terms-of-use constraints;
+- the provenance chain of the records;
+- the mapping path into the canonical schema;
+- whether any personal, defence-adjacent, or restricted information may be present;
+- the proposed redaction, retention, and publication approach.
+
+## Enforcement posture
+
+Maintainers may reject any submission that creates meaningful legal, ethical, or reputational risk, even if the contributor believes the material is already public. The burden of demonstrating lawful and appropriate use rests with the contributor proposing the integration.
 
 ## Final note
 
-This document is a project-level compliance baseline, not legal advice. If a proposed integration, workflow, or publication path raises material legal uncertainty, the work should pause until a qualified advisor or responsible maintainer has reviewed the issue.
+The mission of the project is public-interest analysis grounded in traceable evidence and responsible engineering. That mission is incompatible with classified content, export-controlled material, and unlawfully obtained defence data.

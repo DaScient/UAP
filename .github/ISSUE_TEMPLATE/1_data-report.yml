@@ -1,0 +1,39 @@
+name: Data Report
+id: data-report
+description: Report a new public UAP record, source, or ingestion candidate.
+title: "[Data Report]: "
+labels:
+  - data
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to describe a lawfully obtained public record, source archive, or ingestion candidate.
+  - type: input
+    id: source_name
+    attributes:
+      label: Source name
+      placeholder: AARO public release, local witness submission, public archive, etc.
+    validations:
+      required: true
+  - type: input
+    id: provenance
+    attributes:
+      label: Provenance URL or acquisition path
+      placeholder: Public URL or lawful acquisition explanation
+    validations:
+      required: true
+  - type: textarea
+    id: legal_status
+    attributes:
+      label: Legal status and reuse basis
+      description: Explain why the record is lawful to ingest and redistribute.
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Record summary
+      description: Describe the record and the expected value to the platform.
+    validations:
+      required: true

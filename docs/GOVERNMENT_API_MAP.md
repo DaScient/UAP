@@ -1,95 +1,113 @@
-# Government Data Source Integration Map
+# Government API Map
 
 ## Purpose
 
-This document describes how government-originated UAP, aviation, atmospheric, and sensor-adjacent data sources should be evaluated and integrated into the platform. Its purpose is to create a disciplined intake process so that new sources are added consistently, legally, and with a clear path into the canonical schema model.
+This document provides a contributor-facing scaffold for integrating public, lawfully accessible government-originated UAP and adjacent data sources into the platform. It is designed to make onboarding repeatable, legally reviewable, and contract-driven.
 
-## Integration principles
+## Global source onboarding workflow
 
-Government data integrations should be designed around traceability, lawful use, and reversible ingestion. Every source should be attributable, versionable, and removable if its access terms change. Integrations should favour reproducible mappings over ad hoc parsing logic.
+When adding a new national or institutional source, contributors should follow this sequence.
 
-Each new source should answer five questions before implementation begins:
+### Step 1. Confirm legal access
 
-1. What agency or public body owns the data?
-2. What legal or policy basis permits access and reuse?
-3. What transport mechanism exposes the data?
-4. How does the source map into the canonical UAP event schema?
-5. What quality, latency, and provenance characteristics should downstream consumers understand?
+Document the source owner, the publication or API URL, the governing terms of use, any licensing restrictions, and whether redistribution is allowed. Do not continue if lawful public access is unclear.
 
-## Source classification model
+### Step 2. Record operational details
 
-Government and public-sector sources should be grouped into one of the following categories:
+Document authentication requirements, rate limits, response format, pagination behaviour, and historical backfill limits.
 
-- **Direct UAP disclosure sources**, such as official reports, dashboards, or declassified case files.
-- **Aviation and airspace sources**, such as incident records, NOTAM-related material, or publicly exposed radar-adjacent feeds where legally permitted.
-- **Environmental and space-weather sources**, such as meteorological, astronomical, or atmospheric context feeds used for false-positive reduction.
-- **Geospatial reference sources**, such as terrain, administrative boundary, or public infrastructure data used to contextualise events.
+### Step 3. Map to the canonical contract
 
-This classification should be recorded for each source so that downstream consumers understand whether the source contributes primary evidence, supporting context, or exclusionary baseline data.
+Identify how source fields map into `data-schemas/telemetry.proto`. Record timestamp format, coordinate model, source identifiers, attachments, classification labels, and provenance fields.
 
-## Standard intake workflow
+### Step 4. Preserve provenance
 
-Every proposed source should move through the following workflow:
+Capture the original source identifier, acquisition timestamp, source URL, and any declared confidence or disposition fields. Government authority should not be conflated with evidentiary certainty.
 
-1. **Discovery and legal review.** Confirm that the source is legitimate, public, and suitable for the repository's mission.
-2. **Access review.** Document the API, feed, bulk-download endpoint, or publication mechanism and capture its operational constraints.
-3. **Schema review.** Identify how the source fields map into the canonical UAP event model and what information cannot be represented directly.
-4. **Provenance review.** Define how source identifiers, timestamps, licensing, and collection method will be preserved.
-5. **Operational review.** Determine polling cadence, retry policy, rate limiting, and acceptable failure modes.
-6. **Publication review.** Decide whether raw source material, transformed records, derived metadata, or only links should be exposed publicly.
+### Step 5. Add the source to the cross-map dictionary
 
-No government source should move to implementation before these six concerns are documented.
+Extend `data-schemas/cross_map_dictionary.json` with the source name, stream kind, source endpoint, field map, and post-map rules.
 
-## Required metadata for each source
+### Step 6. Add implementation hooks
 
-Every integrated source should be documented with the following metadata, whether the eventual implementation is data-driven or code-driven:
+Create or extend the ingestion worker logic required to pull, normalise, and validate the source. Avoid bespoke one-off transformations where declarative mappings are sufficient.
 
-- source name;
-- owning agency or institution;
-- jurisdiction;
-- access URL or API base;
-- authentication requirements;
-- usage restrictions or license terms;
-- polling or refresh expectations;
-- record format;
-- canonical schema mapping summary;
-- provenance fields preserved verbatim;
-- publication constraints;
-- maintainer or review owner.
+### Step 7. Update documentation and tests
 
-## Mapping expectations
+Document any special handling rules, publication limits, and required retention or redaction rules. Add representative tests where appropriate.
 
-Source mappings should be expressed declaratively wherever possible. The preferred model is to record field-level mappings, transformation rules, constant values, and provenance handling in data files under `data-schemas/` rather than embedding source-specific logic throughout the ingestion worker.
+---
 
-When a source cannot be mapped cleanly to the canonical contract, contributors should document whether the gap requires:
+## Template for a new nation's API
 
-- a schema extension;
-- a lossy but acceptable transformation;
-- a source-specific enrichment stage;
-- or rejection of the source until the data model is revised.
+Use the following blank scaffold when proposing a new source.
 
-## Provenance and confidence handling
+### Source name
 
-Government data often carries institutional weight that may not reflect evidentiary certainty. Downstream representations should preserve the distinction between source authority and event confidence. A record can originate from a credible agency while still containing incomplete, low-confidence, or unverified observations.
+- **Country or institution:**
+- **Owning agency:**
+- **Access URL:**
+- **Authentication model:**
+- **Public data status:**
+- **Terms or license reference:**
+- **Supported record types:**
+- **Historical backfill availability:**
+- **Canonical mapping summary:**
+- **Publication constraints:**
+- **Maintainer contact or review owner:**
 
-To support that distinction, integrations should preserve source citations, acquisition timestamps, original record identifiers, and any source-provided confidence or disposition markers.
+### Contributor checklist
 
-## Recommended initial source families
+1. Verify that the endpoint is public and legally reusable.
+2. Record authentication and quota requirements.
+3. Capture example payloads for mapping work.
+4. Map all required fields to `UapEvent`.
+5. Preserve original record identifiers and provenance metadata.
+6. Add cross-map dictionary entries.
+7. Add or update ingestion worker code.
+8. Document any national legal or policy caveats.
 
-As the implementation evolves, maintainers may prioritise source families such as:
+---
 
-- declassified national archives and records portals;
-- official UAP or anomaly reporting releases where available;
-- civil aviation safety publications and incident databases;
-- meteorological and astronomical context feeds;
-- public geospatial reference datasets useful for terrain and line-of-sight analysis.
+## Initial source entry: AARO (USA)
 
-These examples are directional rather than exhaustive. The admissibility of any specific source still depends on legal review and operational suitability.
+### Overview
 
-## Change management
+- **Country or institution:** United States
+- **Owning agency:** All-domain Anomaly Resolution Office (AARO)
+- **Source category:** Government-originated UAP disclosures and associated historical materials where publicly released
+- **Expected access pattern:** Public website content, declassified historical document references, and any future formal APIs or bulk-download endpoints
 
-Government sources change frequently. Endpoints move, publication formats drift, and access policies tighten or relax over time. For that reason, every integration should be reviewed periodically, and every source definition should be written so that a maintainer can disable or replace it without disturbing unrelated ingestion paths.
+### Setup guidance
 
-## Final note
+1. Confirm whether AARO offers an official public API, bulk feed, or only web-published documents at the time of integration.
+2. If an API key is required, obtain it through the official registration or developer-access path published by the source owner.
+3. Store the key only in deployment secrets or local environment variables. Never commit credentials into the repository.
+4. Document base URLs, rate limits, and allowed use in the source metadata.
+5. Establish a historical backfill job that pulls only records that are explicitly public or declassified.
+6. Preserve the original publication URL, release date, record identifier, and any official case disposition fields.
+7. Map the source fields into `UapEvent`, leaving fields empty rather than fabricating values when the source is incomplete.
+8. Apply the legal-compliance screening in `docs/LEGAL_COMPLIANCE.md` before enabling publication or redistribution.
 
-This document establishes the repository's expected discipline for government-source integration. It is intended to reduce ambiguity, improve provenance quality, and ensure that data-source growth remains aligned with the project's legal and scientific standards.
+### Historical data pull sequence
+
+1. Identify the official archive or release index for declassified or publicly released records.
+2. Download only those records whose public status is explicit.
+3. Store raw artifacts in object storage with provenance metadata.
+4. Extract timestamps, geospatial references, classification labels, attachments, and narrative text.
+5. Map them into the canonical schema and preserve any ambiguity in a provenance or notes field rather than flattening it away.
+6. Re-run the ingestion pipeline only against explicit public releases as the source archive evolves.
+
+---
+
+## Additional source placeholders
+
+### GEIPAN (France)
+
+- Public aviation and anomaly-reporting source placeholder.
+- Add legal basis, endpoint details, mapping notes, and publication constraints here.
+
+### CEFAA (Chile)
+
+- Public Chilean source placeholder.
+- Add authentication, acquisition workflow, mapping notes, and operational caveats here.
