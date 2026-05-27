@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package uap.telemetry.v1;
+
+import "google/protobuf/timestamp.proto";
+
+message GeoLocation {
+  double latitude = 1;
+  double longitude = 2;
+  double altitude_meters = 3;
+}
+
+enum SensorType {
+  SENSOR_TYPE_UNKNOWN = 0;
+  SENSOR_TYPE_OPTICAL = 1;
+  SENSOR_TYPE_INFRARED = 2;
+  SENSOR_TYPE_RADAR = 3;
+  SENSOR_TYPE_RF_SIGNAL = 4;
+  SENSOR_TYPE_EYEWITNESS = 5;
+  SENSOR_TYPE_OTHER = 6;
+}
+
+enum Shape {
+  SHAPE_UNKNOWN = 0;
+  SHAPE_TIC_TAC = 1;
+  SHAPE_SPHERE = 2;
+  SHAPE_DISC = 3;
+  SHAPE_TRIANGLE = 4;
+}
+
+message TargetSignature {
+  string kinematics_annotated = 1;
+  float max_luminance_watts_per_sr = 2;
+  float estimated_size_meters = 3;
+}
+
+message AutoClassification {
+  Shape assigned_shape = 1;
+  float confidence_score = 2;
+  bool is_anomalous = 3;
+}
+
+message UapEvent {
+  string event_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  GeoLocation location = 3;
+  SensorType sensor_type = 4;
+  TargetSignature signature = 5;
+  repeated string attachments = 6;
+  AutoClassification classification = 7;
+}
