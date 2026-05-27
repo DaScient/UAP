@@ -23,3 +23,41 @@ and publishes it through `actions/deploy-pages`; it does not push to a
 
 The job can also be triggered manually via the **Run workflow** button on
 the Actions tab (`workflow_dispatch`).
+
+## UFO Intel Widget
+
+A self-contained, embeddable Web Component lives under
+`public/widgets/ufo-intel-widget.js`. It is loaded by the dashboard page
+(see `components/UfoIntelWidget.tsx`) and can also be dropped into any
+external intranet portal without a build step:
+
+```html
+<script src="/widgets/ufo-intel-widget.js" defer></script>
+<ufo-intel-widget
+  data-source="https://war.gov/UFO/index.json"
+  refresh-interval="30"
+  theme="dark"
+  llm-provider="openai">
+</ufo-intel-widget>
+```
+
+The widget renders inside a Shadow DOM (no CSS collisions) and provides:
+
+- A merged, filterable intelligence feed (releases + analyst notes + system alerts).
+- A slide-out agentic assistant with BYO API key (OpenAI / Anthropic / local
+  OpenAI-compatible endpoint) and streaming responses. By default the key is
+  held in `sessionStorage` (cleared when the tab closes); add
+  `key-storage="local"` to persist it across sessions in `localStorage`.
+  Either way the key never leaves the browser except to the LLM endpoint
+  the user chose.
+- Client-side RAG using a built-in TF-IDF index over the loaded corpus, with
+  slash-command skills: `/summarize latest`, `/compare agencies`,
+  `/generate report`, `/risk assess <term>`, `/timeline`, `/find patterns`.
+- A deep-analytics tab with a release timeline, agency/keyword graph, and
+  bar/line charts that update live with new data.
+- IndexedDB cache for offline resilience, CSV/JSON/chat-transcript export,
+  and an in-browser audit log for all LLM queries and refresh events.
+
+Open `public/widgets/ufo-intel-demo.html` directly in a browser for a
+zero-build demo.
+
