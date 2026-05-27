@@ -45,9 +45,11 @@ The widget renders inside a Shadow DOM (no CSS collisions) and provides:
 
 - A merged, filterable intelligence feed (releases + analyst notes + system alerts).
 - A slide-out agentic assistant with BYO API key (OpenAI / Anthropic / local
-  OpenAI-compatible endpoint) and streaming responses. Keys are stored in
-  `localStorage`; they are never transmitted anywhere except the configured
-  LLM endpoint.
+  OpenAI-compatible endpoint) and streaming responses. By default the key is
+  held in `sessionStorage` (cleared when the tab closes); add
+  `key-storage="local"` to persist it across sessions in `localStorage`.
+  Either way the key never leaves the browser except to the LLM endpoint
+  the user chose.
 - Client-side RAG using a built-in TF-IDF index over the loaded corpus, with
   slash-command skills: `/summarize latest`, `/compare agencies`,
   `/generate report`, `/risk assess <term>`, `/timeline`, `/find patterns`.

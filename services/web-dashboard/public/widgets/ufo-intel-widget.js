@@ -18,7 +18,9 @@
  * Configuration attributes (all optional):
  *   data-source        URL returning {pdfs:[],images:[],videos:[]} JSON
  *   llm-provider       "openai" | "anthropic" | "local"
- *   api-key            User-supplied key (stored in localStorage if provided)
+ *   api-key            User-supplied key (stored client-side; see key-storage)
+ *   key-storage        "session" (default; cleared when the tab closes) or
+ *                      "local" (persist across sessions via localStorage)
  *   refresh-interval   Polling interval in seconds (default 30)
  *   theme              "dark" | "light"  (default "dark")
  *   density            "compact" | "full" (default "full")
