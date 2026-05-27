@@ -43,6 +43,7 @@
     llmProvider: 'openai',
     cdnD3: 'https://cdn.jsdelivr.net/npm/d3@7/+esm',
     cdnChart: 'https://cdn.jsdelivr.net/npm/chart.js@4/+esm',
+    keyStorage: 'session',
   };
 
   const escapeHtml = (s) =>
@@ -588,7 +589,7 @@ main.body { position: relative; min-height: 0; }
 
   // ------------------------------------------------------- slash commands
   const SLASH = [
-    { cmd: '/summarize latest', help: 'Summarise the 10 most recent releases.' },
+    { cmd: '/summarize latest', help: 'Summarize the 10 most recent releases.' },
     { cmd: '/compare agencies', help: 'Compare release patterns across agencies.' },
     { cmd: '/generate report', help: 'Draft an executive intelligence report.' },
     { cmd: '/risk assess ', help: 'Risk assessment for a keyword/topic.' },
@@ -603,7 +604,7 @@ main.body { position: relative; min-height: 0; }
     const latest = [...docs].sort((a, b) => (b._ts || 0) - (a._ts || 0)).slice(0, 10);
     if (t.startsWith('/summarize latest')) {
       return {
-        text: 'Summarise the ten most recent UAP-related releases. For each, give: date, agency, one-line synopsis, and a calibrated significance score (low/medium/high) with reasoning. End with an overall trend paragraph.',
+        text: 'Summarize the ten most recent UAP-related releases. For each, give: date, agency, one-line synopsis, and a calibrated significance score (low/medium/high) with reasoning. End with an overall trend paragraph.',
         retrieve: latest.map((d) => d.title).join(' ') || 'latest releases',
       };
     }
@@ -647,7 +648,7 @@ main.body { position: relative; min-height: 0; }
   class UfoIntelWidget extends HTMLElement {
     static get observedAttributes() {
       return ['data-source', 'refresh-interval', 'theme', 'density',
-              'llm-provider', 'api-key', 'cdn-d3', 'cdn-chart'];
+              'llm-provider', 'api-key', 'key-storage', 'cdn-d3', 'cdn-chart'];
     }
 
     constructor() {
@@ -712,23 +713,39 @@ main.body { position: relative; min-height: 0; }
       c.llmProvider = this.getAttribute('llm-provider') || c.llmProvider;
       c.cdnD3 = this.getAttribute('cdn-d3') || c.cdnD3;
       c.cdnChart = this.getAttribute('cdn-chart') || c.cdnChart;
+      // Storage scope for the BYO-key. Defaults to sessionStorage (cleared
+      // when the tab closes) — set `key-storage="local"` for explicit
+      // persistence across sessions. Either way the key never leaves the
+      // browser: the widget itself does not transmit it anywhere except,
+      // when the user invokes the assistant, the LLM endpoint they chose.
+      c.keyStorage = this.getAttribute('key-storage') === 'local' ? 'local' : 'session';
       const attrKey = this.getAttribute('api-key');
-      if (attrKey) {
-        try { localStorage.setItem(`ufo-intel-key:${c.llmProvider}`, attrKey); }
-        catch (_) { /* ignore */ }
-      }
+      if (attrKey) this._setApiKey(attrKey);
       this.setAttribute('theme', c.theme);
     }
 
+    _keyStore() {
+      try {
+        return this._state.config.keyStorage === 'local'
+          ? globalThis.localStorage
+          : globalThis.sessionStorage;
+      } catch (_) { return null; }
+    }
+
     _apiKey() {
-      try { return localStorage.getItem(`ufo-intel-key:${this._state.config.llmProvider}`) || ''; }
+      const store = this._keyStore();
+      if (!store) return '';
+      try { return store.getItem(`ufo-intel-key:${this._state.config.llmProvider}`) || ''; }
       catch (_) { return ''; }
     }
 
     _setApiKey(v) {
+      const store = this._keyStore();
+      if (!store) return;
+      const k = `ufo-intel-key:${this._state.config.llmProvider}`;
       try {
-        if (v) localStorage.setItem(`ufo-intel-key:${this._state.config.llmProvider}`, v);
-        else localStorage.removeItem(`ufo-intel-key:${this._state.config.llmProvider}`);
+        if (v) store.setItem(k, v);
+        else store.removeItem(k);
       } catch (_) { /* ignore */ }
     }
 
@@ -1016,7 +1033,7 @@ main.body { position: relative; min-height: 0; }
       if (askBtn) askBtn.addEventListener('click', () => {
         this._toggleChat(true);
         const ta = this._$('[data-input]');
-        ta.value = `Summarise and assess significance of: "${it.title}" (${it.agency})`;
+        ta.value = `Summarize and assess significance of: "${it.title}" (${it.agency})`;
         ta.focus();
       });
     }
