@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>UAP Compendium: AARO, COMETA, FBI Files & Historical Sightings (1947–2026)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f3f0;
+            font-family: 'Segoe UI', 'Roboto', 'Georgia', 'Times New Roman', serif;
+            color: #1e1b16;
+            line-height: 1.5;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: #0a1927;
+            color: #e9f5e9;
+            padding: 2rem 2.5rem;
+            border-bottom: 4px solid #c7a252;
+        }
+
+        header h1 {
+            font-size: 2.3rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.85;
+            max-width: 80%;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #c7a252;
+            color: #0a1927;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            margin-right: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        nav {
+            background: #fefaf5;
+            padding: 0.75rem 2rem;
+            border-bottom: 1px solid #e2dcd5;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-weight: 500;
+        }
+
+        nav a {
+            color: #4a3b2c;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        nav a:hover {
+            color: #b0722a;
+            text-decoration: underline;
+        }
+
+        main {
+            padding: 2rem 2.5rem;
+        }
+
+        section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            border-left: 6px solid #c7a252;
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            color: #2c241a;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #5c3e1f;
+            font-weight: 500;
+            border-bottom: 1px solid #e0d6cc;
+            padding-bottom: 0.3rem;
+        }
+
+        h4 {
+            font-weight: 600;
+            margin: 1rem 0 0.5rem;
+            color: #2b4f3b;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e9e2d9;
+            border-radius: 24px;
+            padding: 1.4rem 1.8rem;
+            margin-bottom: 1.8rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            transition: 0.1s;
+        }
+
+        .card:hover {
+            border-color: #cdbcab;
+        }
+
+        .quote {
+            font-style: italic;
+            background: #fef6e8;
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            border-left: 5px solid #c7a252;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+        }
+
+        .classification {
+            font-family: monospace;
+            font-weight: bold;
+            display: inline-block;
+            background: #2c2b26;
+            color: #f0c674;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+            margin-right: 0.6rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.2rem 0;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            border: 1px solid #ddd6cc;
+            padding: 8px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f0ebe4;
+            font-weight: 600;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        hr {
+            margin: 2rem 0;
+            border: none;
+            height: 1px;
+            background: linear-gradient(to right, #ddd2c5, transparent);
+        }
+
+        footer {
+            background: #f0ede8;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.8rem;
+            color: #5b554b;
+            border-top: 1px solid #ddd2c5;
+        }
+
+        @media (max-width: 750px) {
+            main {
+                padding: 1rem;
+            }
+            header p {
+                max-width: 100%;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1> Unidentified Anomalous Phenomena<br>Compiled Evidence (1947–2026)</h1>
+        <p>Official reports, declassified FBI files, French COMETA study, AARO witness summaries, and early Air Force incident logs — a single comprehensive archive.</p>
+        <div style="margin-top: 1rem;">
+            <span class="badge">AARO 2026</span>
+            <span class="badge">COMETA 1999</span>
+            <span class="badge">FBI Flying Discs</span>
+            <span class="badge">USAF Blue Book</span>
+            <span class="badge">Senate Russell Group</span>
+        </div>
+    </header>
+    <nav>
+        <a href="#recent"> Western US (2023-26)</a>
+        <a href="#senator"> 1955 USSR Discs</a>
+        <a href="#cometa"> COMETA Report</a>
+        <a href="#fbi"> FBI Files (1947-49)</a>
+        <a href="#early"> 1947 Incident Summaries</a>
+        <a href="#intel2025"> Senior Intel Officer (2025)</a>
+    </nav>
+    <main>
+        <!-- SECTION 1: Western US events (2023-2026) -->
+        <section id="recent">
+            <h2> Western United States · 2023–2026 · AARO‑Noted Cases</h2>
+            <div class="card">
+                <h3> “Orbs Launching Orbs”</h3>
+                <p><span class="classification">UNCLASSIFIED // AARO</span> Dusk, two separate days. Three teams of federal special agents (USPER1–6) independently observed orange “mother” orbs appearing for 1–2 seconds, each launching 2–4 smaller red orbs (typically three). Red orbs moved horizontally, sometimes ascending at an angle or swooping downward. Events occurred multiple times; unknown if same orb or multiple.</p>
+                <div class="quote">“Each time, the orange orb would appear, launch red orbs, then disappear.”</div>
+            </div>
+            <div class="card">
+                <h3> Large, Fiery Orb (USPER5, USPER6)</h3>
+                <p>Dusk, western U.S. A glowing orange orb perched near a rock pinnacle ~1050 meters away, 12–18 m diameter (“small helicopter cockpit”). Silently hovered “with zero resistance”. Witness likened to “Eye of Sauron without pupil, or orange bowling ball”. Lasted ~1 minute. No visible structure except possible “spindle” underneath.</p>
+            </div>
+            <div class="card">
+                <h3> Dark Kite (Pre‑dawn)</h3>
+                <p>Initially mistaken for a car with red/white lights 2–3 ft off ground. When pursued, object moved laterally off road at 15–20 mph, unchanged orientation. Stopped, turned off lights; through NVGs it appeared as a “very thin line” ~4 ft wide, horizontal. Later described as triangular. Moved upward and disappeared.</p>
+            </div>
+            <div class="card">
+                <h3> Transparent Kite</h3>
+                <p>30 min after Dark Kite, same area. Kite‑shaped object canted, ~6 m off ground, floating with wind. Through NVGs stars were faintly visible through it (translucent). Spotlight beam initially blocked, later projected through without obstruction. Object could not be reacquired.</p>
+                <div class="quote">“vaguely see a bright star or two in the distance through the object, though somewhat more faint.”</div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: 1955 USSR sighting (Senator Russell) -->
+        <section id="senator">
+            <h2> 1955 Soviet Union · Flying Discs over Transcaucasus</h2>
+            <div class="card">
+                <p><span class="classification">DECLASSIFIED // USAF Intelligence</span> On 4 October 1955, 19:10 hours, Senator Richard Russell, Lt. Col. E.U. Hathaway, and Mr. Ruben Efron witnessed two unconventional disc‑shaped aircraft while traveling by rail between Ajatay and Adzhjabul, USSR. The first disc ascended almost vertically, outer surface revolving slowly to the right, with two stationary lights on top. Reached ~6,000 ft then increased speed sharply heading northwest. One minute later a second identical disc performed the same maneuvers. Two searchlights pointed nearly vertical near takeoff area ~1–2 miles south of rail line. Soviet trainmen became agitated and lowered curtains.</p>
+                <div class="quote">“Three reliable U.S. observers … firmly convinced that they saw a genuine flying saucer or flying disc.”</div>
+                <p><strong>USATRA comment:</strong> “Significance remarkable — lends credence to many ‘saucer’ reports.” Cable classified TOP SECRET, rated B‑2.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: COMETA Report (French IHEDN) -->
+        <section id="cometa">
+            <h2> COMETA Report (1999) · “UFOs and Defense: What Should We Prepare For?”</h2>
+            <div class="card">
+                <p><strong>Authors:</strong> Four‑star Gen. Bernard Norlain, Gen. Denis Letty, André Lebeau (former head of CNES), plus admirals, scientists, national police chief. Conclusion: <em>“The extraterrestrial hypothesis is by far the best scientific hypothesis. Strong presumptions exist in its favor.”</em></p>
+                <h3>Selected aeronautical cases (Chapter 2)</h3>
+                <ul>
+                    <li><strong>Lakenheath/Bentwaters (UK, 1956):</strong> Radar/visual object performed abrupt stops from 0 to 950 km/h, no sonic boom, outmaneuvered RAF Venom fighter.</li>
+                    <li><strong>RB‑47 (USA, 1957):</strong> Pulsed microwave emissions, visual and radar contact; object mirrored aircraft at 18 km distance.</li>
+                    <li><strong>Tehran (1976):</strong> F‑4 Phantoms lost instruments when closing; a smaller object exited the main UFO, pursued fighter, returned. DIA: “Classic case meeting all criteria”.</li>
+                    <li><strong>Air France AF3532 (1994):</strong> 250‑m long object observed visually and on radar for 50 sec; simultaneous disappearance.</li>
+                </ul>
+                <h3>French close encounters</h3>
+                <p>Trans‑en‑Provence (1981) — physical traces, altered vegetation, electromagnetic effects; Valensole (1965) — witness paralyzed; Cussac (1967) — children saw small beings and sphere.</p>
+                <div class="quote">“Category D UAPs (unexplained despite abundant data) represent 4–5% of cases and seem to be completely unknown flying machines with exceptional performances guided by an intelligence.”</div>
+                <h3>Recommendations</h3>
+                <ul>
+                    <li>Inform political, military, aviation decision‑makers.</li>
+                    <li>Boost SEPRA resources (French UAP agency).</li>
+                    <li>Create high‑level national unit for prospective analysis.</li>
+                    <li>Initiate diplomatic action with the United States and EU.</li>
+                    <li>Prepare for scenarios: overt contact, mass landing, etc.</li>
+                </ul>
+                <p><em>Appendix 5: Roswell – disinformation both reducing and amplifying; GAO report confirms destruction of base records.</em></p>
+            </div>
+        </section>
+
+        <!-- SECTION 4: FBI Flying Disc files 1947-1949 (section 4) -->
+        <section id="fbi">
+            <h2> FBI · “Flying Discs” · 1947–1949 Declassified Correspondence</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>Portland, Oregon · July 4, 1947</h4>
+                    <p>Police radio log recorded discs at 13:05. Patrolman Kenneth A. McDowell saw 5 discs “dipping up and down”. Patrolman Earl E. Patterson (former Air Corps pilot) observed a single disc at ~30,000 ft, “terrific speed, performed 90° angle change, no noise”. Capt. K.A. Prehn, harbor pilot, described “full disc, half‑moon shape, then nothing; shiny chromium hub cap appearance”.</p>
+                </div>
+                <div class="card">
+                    <h4>Muroc Army Air Field (July 1947)</h4>
+                    <p>1st Lt McHenry and 5 witnesses saw 2‑3 silver spherical/disc objects at 8,000 ft, speed 300‑400 mph, “performed too tight a circle to be any known aircraft”. S/Sgt Joseph Ruvolo: “no motor roar … not a balloon.”</p>
+                </div>
+                <div class="card">
+                    <h4>William A. Rhodes photograph, Phoenix (July 7, 1947)</h4>
+                    <p>Photographed elliptical object, 20‑30 ft diameter, grey, “cockpit‑like canopy”, jet‑like noise before but no sound while visible. Air Force took negatives. FBI lab later deemed negatives authentic but no residue.</p>
+                </div>
+                <div class="card">
+                    <h4>Lonnie Edward Noack “flying disc” hoax (Dec 1948)</h4>
+                    <p>Reported crashed disc in desert. Investigation identified it as a tow‑target kite built by Claude Wolford for Olson & Rice Mfg. Co. Parts positively identified; case closed.</p>
+                </div>
+                <div class="card">
+                    <h4>Oak Ridge “vapor trail” photos (July 1947)</h4>
+                    <p>Colonel Gasser, AMC engineer, analyzed negatives and concluded the “ball of fire” and trail were caused by a drop of water/developer on film. However, Gasser confidentially told FBI flying discs were “man‑made missiles … possibly Russian.”</p>
+                </div>
+                <div class="card">
+                    <h4>USAF policy & coordination (1948‑49)</h4>
+                    <p>FBI Bulletin #57 (Oct 1947) discontinued active investigations. Air Defense Command later attempted to coordinate, but FBI reaffirmed passive role. By 1949, SAC letter instructed field offices to forward witness data to Air Force using questionnaire.</p>
+                </div>
+            </div>
+            <div class="card">
+                <h4>Green fireballs & Los Alamos (Dec 1948 – March 1949)</h4>
+                <p>4th Army G‑2 reported multiple sightings over Los Alamos, Sandia, Camp Hood. Characteristics: yellow‑green (~5200 Å), no noise, constant intensity, horizontal path, duration ~2 seconds. Dr. Lincoln La Paz leading studies. Some suspected Soviet‑origin missiles or cosmic ray focus.</p>
+                <div class="quote">“No debris has ever been located … scientists state phenomena not due to meteorites.”</div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Early incident summaries 1-100 (1947, Muroc, Arnold, Mantell) -->
+        <section id="early">
+            <h2> 1947 Incident Summaries (USAF / Project Sign era)</h2>
+            <div class="card">
+                <h3>Kenneth Arnold (June 24, 1947)</h3>
+                <p>Nine “chain‑like” objects near Mt. Rainier, WA, flying at 9,500 ft, estimated speed 1,500+ mph (discrepancy later analysis). “Mirror‑like, no tails, flew diagonally like a chain.” Agent note: “If he did not see the objects, he should write Buck Rogers fiction.”</p>
+            </div>
+            <div class="card">
+                <h3>Muroc AFB – Major Shop & Major Wise (July 1947)</h3>
+                <p>Major Shop observed metallic aluminum object 5‑8 miles north, oscillating and descending near ground. Major Wise saw yellowish‑white sphere 5‑10 ft diameter, oscillating in forward whirling movement.</p>
+            </div>
+            <div class="card">
+                <h3>Capt. Thomas F. Mantell incident (January 7, 1948)</h3>
+                <p>Godman Field, Kentucky. P‑51 pilot Mantell fatally crashed while pursuing a “large metallic object”. Tower operators and Col. Hix described silvery round object, sometimes cone‑shaped, “1/4 size of full moon”. Radio transcript: “It looks metallic and of tremendous size … I’m going up after it”. Official explanation: weather balloon (Skyhook). Witnesses including Capt. Duesler disputed.</p>
+                <div class="quote">“Object appears to be 250‑300 ft diameter … metallic, tremendous size.” – Flight leader reports.</div>
+            </div>
+            <div class="card">
+                <h3>Clinton County AFB (Wilmington, Ohio) – Jan 7, 1948</h3>
+                <p>Multiple tower operators observed red/green cone‑shaped object trailing green mist; could be seen through overcast, hovered, made vertical ascents/descents at great speed.</p>
+            </div>
+            <div class="card">
+                <h3>Pan American flight (Midway to Oahu, Sept 12, 1947)</h3>
+                <p>Capt Griffin & 2nd Officer Polhemus saw an intense white light at 9,500 ft altitude, no beam, 1,160 mph speed (estimated), abruptly changed course, split into two reddish lights, burned out. “Not a meteor because it held altitude.”</p>
+            </div>
+            <div class="card">
+                <h3>Alaska – Bethel (Aug 4, 1947)</h3>
+                <p>Pilot Jack Peck & co‑pilot Vince Daly saw large black saucer‑shaped object “as large as C‑54 without wings”, no propulsive means, followed at 170 mph but object sped away NW at ~520 mph.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 6: Senior US Intelligence Officer (2025) -->
+        <section id="intel2025">
+            <h2> Senior Intelligence Officer UAP Encounter (2025) · Helicopter Mission</h2>
+            <div class="card">
+                <p>Late 2025, a senior U.S. intelligence officer, colleague, and two pilots flew nap‑of‑the‑earth in a helicopter over a test range investigating loud thuds and orb sightings. After refueling at dusk, they used FLIR/NVG. Ground team reported a “super‑hot” UAP that split into two. While hovering at 700 ft AGL, the officer witnessed <strong>countless orange orbs swarming</strong> against mountains. Later, four or five orbs formed a “T” formation just above the rotor disk: two large orbs side‑by‑side, then a third below, a fourth, fifth. They dimmed in reverse order — total 10‑15 seconds.</p>
+                <div class="quote">“The same type of orbs appeared directly above the fighter jets, flaring up one at a time in horizontal formation, matching their speed and flight path … seemed to be ‘chasing’ the fighters.”</div>
+                <p>Pilots observed similar orbs pursuing U.S. fighter jets (flashing navigation lights). The encounter lasted over an hour. No photos taken due to threat assessment focus. “We were virtually speechless.”</p>
+                <p><strong>Corroboration:</strong> Fighter jets launched on training mission; JOC radar hits matched orb positions. Orbs demonstrated formation flying, station‑keeping, and intelligent behavior.</p>
+            </div>
+        </section>
+
+        <!-- Extra: COMETA additional highlights & technical models -->
+        <section>
+            <h2> Physical Models & Hypotheses (COMETA, Ch. 8)</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>Magnetohydrodynamic (MHD) propulsion</h4>
+                    <p>Silent flight, supersonic without sonic boom, possible using superconductors. Explains lack of noise and extreme accelerations.</p>
+                </div>
+                <div class="card">
+                    <h4>EM effects on vehicles & witnesses</h4>
+                    <p>Microwave or charged particle beams can shut off engines, cause temporary paralysis (cerebellar‑independent effects). Weapons lab studies confirm plausibility.</p>
+                </div>
+                <div class="card">
+                    <h4>Interstellar travel models</h4>
+                    <p>Antimatter propulsion, slingshot gravity assists, “ship‑worlds” generation colonies — within physically plausible scenarios for civilizations thousands of years ahead.</p>
+                </div>
+                <div class="card">
+                    <h4>Radar/visual statistics</h4>
+                    <p>Between 1947‑1969, 21% of aeronautical UAP cases had radar correlation. 500+ well‑documented UAP‑D cases worldwide.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2> Notable Declassified Memos & Orders</h2>
+            <div class="card">
+                <p><strong>Headquarters, Air Defense Command (Feb 4, 1948):</strong> “Investigation and Reporting of ‘Flying Disc’ Incidents” — numbered air forces to investigate, coordinate with FBI, submit spot and letter reports. TWX for substantial incidents.</p>
+                <p><strong>FBI SAC Letter #38 (March 25, 1949):</strong> Field offices instructed to collect voluntary data using Air Force questionnaire, but no active investigation. “Flying discs believed to be man‑made missiles … USSR experimenting for past four years.”</p>
+                <p><strong>JANAP 146 (Joint Army Navy Air Force Publication):</strong> Reporting sightings of UFOs was mandatory for military and some civilian pilots, unauthorized disclosure punishable by $10,000 fine and 10 years imprisonment.</p>
+            </div>
+        </section>
+
+        <!-- Summary / legacy -->
+        <hr>
+        <section>
+            <h2> Common Patterns Across Decades</h2>
+            <ul>
+                <li><strong>Silence & absence of sonic boom</strong> — reported from 1947 Muroc sightings to 2025 helicopter orbs.</li>
+                <li><strong>Extreme accelerations / abrupt stops</strong> — Lakenheath 1956, Tehran 1976, Western US “Dark Kite”.</li>
+                <li><strong>EM interference</strong> — radio/engine failures (RB‑47, Tehran, San Carlos de Bariloche).</li>
+                <li><strong>Intelligent maneuvering</strong> — mirroring aircraft, formation flight, chasing fighters.</li>
+                <li><strong>Transparency / metamaterial appearance</strong> — “Transparent Kite” (2023) and translucent discs described in early FBI files.</li>
+            </ul>
+            <div class="quote" style="background: #eef2f0;">“The only thing that’s lacking is the official stamp.” — Dr. Edgar Mitchell, Apollo 14 astronaut, commenting on COMETA report.</div>
+        </section>
+
+        <footer>
+            <p>Compiled from AARO slide deck (2026), declassified USAF intelligence reports, FBI CRS section 4 (62‑83894), COMETA report (VSD special edition), and Project Sign incident summaries. All materials are in the public domain or officially released. Presented for research and historical documentation.</p>
+            <p style="margin-top: 1rem;">📄 References: Western US event slides (5.08.2026); Numerical file 5‑2500 (NND 857013); ODNI‑UAP‑D001; COMETA English translation; FBI HQ‑62‑83894; Box 7 incident summaries 1‑100.</p>
+        </footer>
+    </main>
+</div>
+</body>
+</html>
