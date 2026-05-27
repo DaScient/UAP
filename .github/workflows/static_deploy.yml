@@ -1,25 +1,33 @@
 name: Deploy Static Hub & Model Artifacts to Pages
 
+# The dashboard is served from https://<owner>.github.io/UAP/. The Pages
+# source must be set to "GitHub Actions" in the repository settings; this
+# workflow then uploads a build artifact and deploys it through the
+# official `actions/deploy-pages` action.
 on:
   push:
     branches:
       - main
-    paths:
-      - 'services/web-dashboard/**'
-      - 'services/math-engine/**'
-      - 'data-schemas/**'
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping queued runs in between.
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  build_and_deploy:
+  build:
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_BASE_PATH: /UAP
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Setup Node 20
         uses: actions/setup-node@v4
@@ -28,16 +36,20 @@ jobs:
           cache: 'npm'
           cache-dependency-path: services/web-dashboard/package-lock.json
 
-      - name: Setup Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
       - name: Setup Rust stable
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            services/math-engine/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('services/math-engine/Cargo.toml') }}
+
       - name: Install wasm-pack
-        run: cargo install wasm-pack
+        run: cargo install wasm-pack --locked
 
       - name: Compile Rust Math Engine to WASM
         working-directory: services/math-engine
@@ -55,7 +67,7 @@ jobs:
           /*.html
             Cross-Origin-Opener-Policy: same-origin
             Cross-Origin-Embedder-Policy: require-corp
-          
+
           /*.wasm
             Cross-Origin-Opener-Policy: same-origin
             Cross-Origin-Embedder-Policy: require-corp
@@ -68,12 +80,26 @@ jobs:
           cp -R services/web-dashboard/out/. gh-pages-root/
           cp -R services/math-engine/pkg/. gh-pages-root/wasm-engine/
           cp -R data-schemas/. gh-pages-root/schemas/
+          # Disable Jekyll processing so files/directories beginning with
+          # "_" (e.g. _next) are served verbatim.
           touch gh-pages-root/.nojekyll
+          # Provide a top-level 404 fallback for direct deep-link requests.
+          if [ ! -f gh-pages-root/404.html ] && [ -f gh-pages-root/index.html ]; then
+            cp gh-pages-root/index.html gh-pages-root/404.html
+          fi
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./gh-pages-root
-          publish_branch: gh-pages
-          force_orphan: true
+          path: ./gh-pages-root
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
