@@ -4,6 +4,7 @@ from pathlib import Path
 import pdfplumber
 from docx import Document as DocxDocument
 from datetime import datetime
+import pandas as pd
 from backend.database import SessionLocal, Document
 from backend.ocr_utils import extract_text_from_image
 from backend.config import RAW_DIR
@@ -25,13 +26,60 @@ def extract_text_from_txt(path: str) -> str:
     with open(path, "r", encoding="utf-8", errors="ignore") as f:
         return f.read()
 
-def extract_text_from_csv(path: str) -> str:
-    text_rows = []
-    with open(path, "r", encoding="utf-8", errors="ignore") as f:
-        reader = csv.reader(f)
-        for row in reader:
-            text_rows.append(" ".join(row))
-    return "\n".join(text_rows)
+def extract_text_from_csv_as_docs(file_path: str, source_dataset: str) -> list:
+    """
+    Reads a CSV file, creates one Document per row.
+    Returns list of Document objects (not yet committed).
+    """
+    df = pd.read_csv(file_path)
+    docs = []
+    for idx, row in df.iterrows():
+        # Combine all text columns into extracted_text
+        text_parts = []
+        for col in df.columns:
+            if col not in ['latitude', 'longitude', 'date posted', 'shape', 'comment_length',
+                           'country', 'state', 'verified', 'year_month']:
+                val = row[col]
+                if pd.notna(val):
+                    text_parts.append(str(val))
+        full_text = " ".join(text_parts)
+        if not full_text.strip():
+            continue
+        
+        # Parse date
+        date_val = None
+        if 'date posted' in df.columns and pd.notna(row['date posted']):
+            try:
+                date_val = pd.to_datetime(row['date posted']).to_pydatetime()
+            except:
+                pass
+        
+        # year_month for animation
+        ym = None
+        if date_val:
+            ym = date_val.strftime("%Y-%m")
+        
+        doc = Document(
+            filename=f"{Path(file_path).stem}_row{idx}.csv",
+            original_path=f"{file_path}:row{idx}",
+            extracted_text=full_text,
+            text_preview=full_text[:500],
+            file_type="csv_row",
+            source_dataset=source_dataset,
+            doc_date=date_val,
+            year_month=ym,
+            latitude=float(row['latitude']) if 'latitude' in df.columns and pd.notna(row['latitude']) else None,
+            longitude=float(row['longitude']) if 'longitude' in df.columns and pd.notna(row['longitude']) else None,
+            incident_shape=str(row['shape']) if 'shape' in df.columns and pd.notna(row['shape']) else None,
+            comment_length=int(row['comment_length']) if 'comment_length' in df.columns and pd.notna(row['comment_length']) else None,
+            country=str(row['country']) if 'country' in df.columns and pd.notna(row['country']) else None,
+            state_code=str(row['state']) if 'state' in df.columns and pd.notna(row['state']) else None,
+            verified=bool(row['verified']) if 'verified' in df.columns and pd.notna(row['verified']) else False,
+            topic_id=-1,
+            anomaly_score=0.0
+        )
+        docs.append(doc)
+    return docs
 
 def extract_text_from_image_file(path: str) -> str:
     return extract_text_from_image(path)
