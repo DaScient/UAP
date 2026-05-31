@@ -23,6 +23,12 @@ class Document(Base):
     doc_date = Column(DateTime, nullable=True)   # extracted from file or content
     topic_id = Column(Integer, default=-1)       # -1 = outlier/anomaly
     anomaly_score = Column(Float, default=0.0)
+
+    __table_args__ = (
+        Index('ix_doc_lat_lon', 'latitude', 'longitude'),
+        Index('ix_doc_year_month', 'year_month'),
+    )
+    
     # Inside Document class, add after existing columns:
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
