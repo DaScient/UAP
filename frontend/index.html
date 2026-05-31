@@ -30,16 +30,34 @@
             <div class="stat-card">⚠️ Anomalies: <span id="anomalyCount">0</span></div>
         </div>
         
-        <div class="viz-container">
-            <div id="scatter3d" class="plot"></div>
-            <div class="info-sidebar">
-                <h3>🔍 Topic Insights</h3>
-                <div id="topicKeywords"></div>
-                <h3>📈 Trends over Time</h3>
-                <canvas id="trendChart" width="400" height="200"></canvas>
-                <h3>⚠️ Top Anomalies</h3>
-                <ul id="anomalyList"></ul>
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="topic">🗺️ Topic Landscape</button>
+            <button class="tab-btn" data-tab="geo">🌍 Geographic Spacetime</button>
+        </div>
+
+        <div id="topicView" class="tab-content active">
+            <div class="viz-container">
+                <div id="scatter3d" class="plot"></div>
+                <div class="info-sidebar">
+                    <h3>🔍 Topic Insights</h3>
+                    <div id="topicKeywords"></div>
+                    <h3>📈 Trends over Time</h3>
+                    <canvas id="trendChart" width="400" height="200"></canvas>
+                    <h3>⚠️ Top Anomalies</h3>
+                    <ul id="anomalyList"></ul>
+                </div>
             </div>
+        </div>
+
+        <div id="geoView" class="tab-content">
+            <div class="geo-controls">
+                <label for="geoMode">View mode:</label>
+                <select id="geoMode">
+                    <option value="3d">3D Scatter (Lat, Lon, Time)</option>
+                    <option value="2d">2D Animated Map (Time slider)</option>
+                </select>
+            </div>
+            <div id="geoPlot" class="plot"></div>
         </div>
         
         <div id="correlationModal" class="modal">

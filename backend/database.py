@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Text, Boolean
+from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Text, Boolean, Index
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
@@ -24,12 +24,7 @@ class Document(Base):
     topic_id = Column(Integer, default=-1)       # -1 = outlier/anomaly
     anomaly_score = Column(Float, default=0.0)
 
-    __table_args__ = (
-        Index('ix_doc_lat_lon', 'latitude', 'longitude'),
-        Index('ix_doc_year_month', 'year_month'),
-    )
-    
-    # Inside Document class, add after existing columns:
+    # Geographic / temporal extension (populated from CSV columns when present)
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
     incident_shape = Column(String(50), nullable=True)
@@ -38,6 +33,11 @@ class Document(Base):
     state_code = Column(String(10), nullable=True)
     verified = Column(Boolean, default=False)
     year_month = Column(String(7), nullable=True)   # e.g., "2000-01"
+
+    __table_args__ = (
+        Index('ix_doc_lat_lon', 'latitude', 'longitude'),
+        Index('ix_doc_year_month', 'year_month'),
+    )
 
 class TopicWord(Base):
     __tablename__ = "topic_words"

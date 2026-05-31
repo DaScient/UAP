@@ -6,3 +6,7 @@ out/
 pkg/
 target/
 .DS_Store
+
+# Runtime data (uploads, processed files, SQLite DB, trained models)
+data/
+
