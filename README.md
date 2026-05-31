@@ -1,3 +1,22 @@
+# UAP Incident Topic Explorer
+
+Fly through thousands of incident reports using AI topic modeling and 3D visualization.
+
+## Features
+- Ingest PDF, DOCX, TXT, CSV, PNG, JPG (OCR for images)
+- BERTopic + anomaly detection
+- 3D interactive scatter plot (fly-through with mouse)
+- Trend analysis over time
+- Cross‑dataset correlation
+
+## Quick Start
+```bash
+git clone https://github.com/dascient/UAP.git
+cd UAP
+pip install -r requirements.txt
+python run.py
+```
+
 # Global UAP Intelligence Hub
 
 Global UAP Intelligence Hub is an agentic, polyglot, and decentralised platform for collecting, normalising, analysing, and publicly visualising Unidentified Anomalous Phenomena observations across heterogeneous sources. The system is designed to unify eyewitness submissions, automated sensor feeds, historical document archives, and curated government datasets under one canonical contract while preserving provenance, legal controls, and scientific traceability.
