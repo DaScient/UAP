@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAP | Incident Topic Fly-Through</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.plot.ly/plotly-3.0.1.min.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="glass-panel">
+        <h1>🌀 UAP Incident Intelligence</h1>
+        <p class="sub">fly through topics · detect anomalies · correlate datasets</p>
+        
+        <div class="upload-area" id="uploadZone">
+            📂 Drag & drop files (PDF, DOCX, TXT, CSV, PNG, JPG) or click to select
+            <input type="file" id="fileInput" multiple style="display:none">
+        </div>
+        <div class="button-bar">
+            <button id="scanBtn">📁 Scan Raw Folder</button>
+            <button id="processBtn">🔥 Run Topic Modeling</button>
+            <button id="correlateBtn">🔗 Show Correlation Matrix</button>
+            <button id="resetViewBtn">🎯 Reset Camera</button>
+        </div>
+        
+        <div class="stats-grid" id="statsPanel">
+            <div class="stat-card">📄 Documents: <span id="docCount">0</span></div>
+            <div class="stat-card">🏷️ Topics: <span id="topicCount">0</span></div>
+            <div class="stat-card">⚠️ Anomalies: <span id="anomalyCount">0</span></div>
+        </div>
+        
+        <div class="viz-container">
+            <div id="scatter3d" class="plot"></div>
+            <div class="info-sidebar">
+                <h3>🔍 Topic Insights</h3>
+                <div id="topicKeywords"></div>
+                <h3>📈 Trends over Time</h3>
+                <canvas id="trendChart" width="400" height="200"></canvas>
+                <h3>⚠️ Top Anomalies</h3>
+                <ul id="anomalyList"></ul>
+            </div>
+        </div>
+        
+        <div id="correlationModal" class="modal">
+            <div class="modal-content glass">
+                <span class="close">&times;</span>
+                <h3>Cross-Dataset Similarity</h3>
+                <div id="correlationMatrix"></div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
