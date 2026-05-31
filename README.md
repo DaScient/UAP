@@ -4,10 +4,12 @@ Fly through thousands of incident reports using AI topic modeling and 3D visuali
 
 ## Features
 - Ingest PDF, DOCX, TXT, CSV, PNG, JPG (OCR for images)
-- BERTopic + anomaly detection
+- BERTopic + anomaly detection (Isolation Forest)
 - 3D interactive scatter plot (fly-through with mouse)
 - Trend analysis over time
 - Cross‑dataset correlation
+- Geographic & temporal exploration (CSV with `latitude`/`longitude`/`date posted`):
+  3D space-time scatter and a 2D time-animated map
 
 ## Quick Start
 ```bash
@@ -16,6 +18,36 @@ cd UAP
 pip install -r requirements.txt
 python run.py
 ```
+Then open `http://localhost:8000`.
+
+> **Tesseract OCR** is required for image (PNG/JPG) ingestion and must be
+> installed separately, e.g. `apt-get install tesseract-ocr` (Debian/Ubuntu) or
+> `brew install tesseract` (macOS). Override the binary path via `TESSERACT_CMD`
+> in `backend/config.py` if it is not on `PATH`.
+
+## Usage
+1. Drag & drop files onto the upload zone (or click to select), or place files in
+   `data/raw/` and press **Scan Raw Folder**.
+2. Press **Run Topic Modeling** to embed documents, cluster topics, and score
+   anomalies. The 3D landscape and sidebar refresh automatically.
+3. Switch to the **Geographic Spacetime** tab to explore lat/lon/time data parsed
+   from CSV uploads, toggling between the 3D scatter and 2D animated map.
+4. Press **Show Correlation Matrix** to compare the semantic similarity of two
+   source datasets.
+
+### CSV columns recognised for the geographic view
+`latitude`, `longitude`, `date posted`, `shape`, `comment_length`, `country`,
+`state`, `verified`. Any remaining columns are concatenated into the document text.
+
+## Docker
+```bash
+docker build -t uap-explorer .
+docker run -p 8000:8000 -v $(pwd)/data:/app/data uap-explorer
+```
+The image bundles Tesseract and all Python dependencies. Mount the `data/` volume
+to persist uploads, the SQLite database, and the trained model.
+
+See [`spec.md`](spec.md) for the full specification.
 
 # Global UAP Intelligence Hub
 

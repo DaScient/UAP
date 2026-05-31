@@ -131,30 +131,58 @@ async def get_trends():
 
 @app.get("/correlation")
 async def get_correlation(dataset_a: str = "web_upload", dataset_b: str = "raw_folder"):
-    """Compute cosine similarity between embeddings of two datasets."""
+    """Compute cosine similarity between mean embeddings of two datasets."""
     modeler = TopicModeler()
     modeler.load_documents_from_db()
-    if modeler.topic_model is None:
-        modeler.fit()
-    embeddings = modeler.topic_model.embeddings_
+    if not modeler.doc_ids:
+        return {"error": "No documents available"}
+    embeddings = modeler.compute_embeddings()
     db = SessionLocal()
     docs_a = db.query(Document).filter(Document.source_dataset == dataset_a).all()
     docs_b = db.query(Document).filter(Document.source_dataset == dataset_b).all()
     db.close()
     if not docs_a or not docs_b:
         return {"error": "One or both datasets empty"}
-    
+
     # Get indices
     indices_a = [modeler.doc_ids.index(d.id) for d in docs_a if d.id in modeler.doc_ids]
     indices_b = [modeler.doc_ids.index(d.id) for d in docs_b if d.id in modeler.doc_ids]
     if not indices_a or not indices_b:
         return {"error": "No overlapping embeddings"}
-    
+
     emb_a = embeddings[indices_a]
     emb_b = embeddings[indices_b]
     # Mean embedding per dataset
     mean_a = np.mean(emb_a, axis=0)
     mean_b = np.mean(emb_b, axis=0)
     # Cosine similarity
-    sim = np.dot(mean_a, mean_b) / (np.linalg.norm(mean_a) * np.linalg.norm(mean_b))
-    return {"similarity": float(sim), "dataset_a": dataset_a, "dataset_b": dataset_b}
+    denom = (np.linalg.norm(mean_a) * np.linalg.norm(mean_b)) or 1.0
+    sim = float(np.dot(mean_a, mean_b) / denom)
+    return {"similarity": sim, "dataset_a": dataset_a, "dataset_b": dataset_b}
+
+@app.get("/geo-data")
+async def get_geo_data():
+    """Return geographic/temporal metadata for all documents with lat/lon."""
+    db = SessionLocal()
+    docs = db.query(Document).filter(
+        Document.latitude.isnot(None), Document.longitude.isnot(None)
+    ).all()
+    points = []
+    for doc in docs:
+        points.append({
+            "id": doc.id,
+            "filename": doc.filename,
+            "latitude": doc.latitude,
+            "longitude": doc.longitude,
+            "shape": doc.incident_shape,
+            "comment_length": doc.comment_length if doc.comment_length is not None else 0,
+            "country": doc.country,
+            "state": doc.state_code,
+            "verified": doc.verified,
+            "date_posted": doc.doc_date.isoformat() if doc.doc_date else None,
+            "year_month": doc.year_month,
+            "text_preview": doc.text_preview or "",
+            "topic": int(doc.topic_id) if doc.topic_id is not None else -1,
+        })
+    db.close()
+    return {"points": points}

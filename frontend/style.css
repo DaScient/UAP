@@ -154,3 +154,51 @@ button:hover {
     font-size: 1.8rem;
     cursor: pointer;
 }
+
+/* ----- Tabs ----- */
+.tab-bar {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+.tab-btn {
+    background: rgba(20, 30, 45, 0.6);
+    border: 1px solid rgba(100, 150, 255, 0.3);
+    opacity: 0.7;
+}
+.tab-btn.active {
+    background: #2a3a6e;
+    border-color: #5f9eff;
+    opacity: 1;
+    box-shadow: 0 0 12px rgba(95, 158, 255, 0.4);
+}
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+
+/* ----- Geographic view ----- */
+.geo-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+.geo-controls select {
+    background: rgba(25, 35, 55, 0.8);
+    border: 1px solid rgba(100, 150, 255, 0.6);
+    color: #eef5ff;
+    padding: 0.5rem 1rem;
+    border-radius: 1.5rem;
+    cursor: pointer;
+}
+#geoPlot {
+    width: 100%;
+    min-height: 600px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 1.5rem;
+    overflow: hidden;
+}

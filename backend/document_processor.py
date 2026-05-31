@@ -71,7 +71,7 @@ def extract_text_from_csv_as_docs(file_path: str, source_dataset: str) -> list:
             latitude=float(row['latitude']) if 'latitude' in df.columns and pd.notna(row['latitude']) else None,
             longitude=float(row['longitude']) if 'longitude' in df.columns and pd.notna(row['longitude']) else None,
             incident_shape=str(row['shape']) if 'shape' in df.columns and pd.notna(row['shape']) else None,
-            comment_length=int(row['comment_length']) if 'comment_length' in df.columns and pd.notna(row['comment_length']) else None,
+            comment_length=int(row['comment_length']) if 'comment_length' in df.columns and pd.notna(row['comment_length']) else len(full_text),
             country=str(row['country']) if 'country' in df.columns and pd.notna(row['country']) else None,
             state_code=str(row['state']) if 'state' in df.columns and pd.notna(row['state']) else None,
             verified=bool(row['verified']) if 'verified' in df.columns and pd.notna(row['verified']) else False,
@@ -92,9 +92,35 @@ def get_file_date(path: str) -> datetime | None:
     except:
         return None
 
+def ingest_csv_file(file_path: Path, source_dataset: str = "upload") -> list:
+    """Ingest a CSV file as one Document per non-empty row. Returns list of new IDs."""
+    docs = extract_text_from_csv_as_docs(str(file_path), source_dataset)
+    if not docs:
+        return []
+    db = SessionLocal()
+    existing_paths = {p for (p,) in db.query(Document.original_path).all()}
+    new_ids = []
+    for doc in docs:
+        if doc.original_path in existing_paths:
+            continue
+        db.add(doc)
+        try:
+            db.commit()
+            db.refresh(doc)
+            new_ids.append(doc.id)
+            existing_paths.add(doc.original_path)
+        except Exception:
+            db.rollback()
+    db.close()
+    return new_ids
+
 def ingest_file(file_path: Path, source_dataset: str = "upload") -> int:
-    """Parse file, store text in DB. Returns document ID."""
+    """Parse file, store text in DB. Returns document ID (or first row ID for CSV)."""
     ext = file_path.suffix.lower()
+    if ext == ".csv":
+        ids = ingest_csv_file(file_path, source_dataset=source_dataset)
+        return ids[0] if ids else -1
+
     text = ""
     if ext == ".pdf":
         text = extract_text_from_pdf(str(file_path))
@@ -102,11 +128,8 @@ def ingest_file(file_path: Path, source_dataset: str = "upload") -> int:
         text = extract_text_from_docx(str(file_path))
     elif ext == ".txt":
         text = extract_text_from_txt(str(file_path))
-    elif ext == ".csv":
-        text = extract_text_from_csv(str(file_path))
     elif ext in (".png", ".jpg", ".jpeg"):
         text = extract_text_from_image_file(str(file_path))
-        has_ocr = True
     else:
         return -1
 
@@ -131,8 +154,9 @@ def ingest_file(file_path: Path, source_dataset: str = "upload") -> int:
     db.add(doc)
     db.commit()
     db.refresh(doc)
+    doc_id = doc.id
     db.close()
-    return doc.id
+    return doc_id
 
 def ingest_all_raw_files():
     """Scan data/raw and ingest any new files."""
