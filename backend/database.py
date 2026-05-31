@@ -23,6 +23,15 @@ class Document(Base):
     doc_date = Column(DateTime, nullable=True)   # extracted from file or content
     topic_id = Column(Integer, default=-1)       # -1 = outlier/anomaly
     anomaly_score = Column(Float, default=0.0)
+    # Inside Document class, add after existing columns:
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+    incident_shape = Column(String(50), nullable=True)
+    comment_length = Column(Integer, nullable=True)
+    country = Column(String(10), nullable=True)
+    state_code = Column(String(10), nullable=True)
+    verified = Column(Boolean, default=False)
+    year_month = Column(String(7), nullable=True)   # e.g., "2000-01"
 
 class TopicWord(Base):
     __tablename__ = "topic_words"
