@@ -176,5 +176,140 @@ uploadZone.ondrop = async (e) => {
     await uploadFiles(files);
 };
 
-// Initial load
+// ----- Geographic visualization -----
+let geoPoints = [];
+let currentGeoMode = '3d';
+
+async function fetchGeoData() {
+    const res = await fetch('/geo-data');
+    const data = await res.json();
+    geoPoints = data.points;
+    return geoPoints;
+}
+
+function renderGeo3D(points) {
+    const traces = [];
+    // Group by shape for coloring (like your sample)
+    const shapes = [...new Set(points.map(p => p.shape).filter(s => s))];
+    const colorMap = {};
+    shapes.forEach((s, i) => colorMap[s] = `hsl(${i * 360 / shapes.length}, 70%, 60%)`);
+    
+    for (const shape of shapes) {
+        const pts = points.filter(p => p.shape === shape);
+        if (!pts.length) continue;
+        traces.push({
+            x: pts.map(p => new Date(p.date_posted).getTime()), // time as x-axis
+            y: pts.map(p => p.longitude),
+            z: pts.map(p => p.latitude),
+            mode: 'markers',
+            type: 'scatter3d',
+            name: shape,
+            marker: {
+                size: pts.map(p => Math.min(15, Math.max(3, p.comment_length / 50))),
+                color: colorMap[shape],
+                opacity: 0.7
+            },
+            text: pts.map(p => `${p.filename}<br>Shape: ${p.shape}<br>Len: ${p.comment_length}<br>${p.text_preview.substring(0,100)}`),
+            hoverinfo: 'text'
+        });
+    }
+    const layout = {
+        title: 'Incidents over Time & Space (X=Date, Y=Longitude, Z=Latitude)',
+        scene: {
+            xaxis: { title: 'Date Posted', type: 'date' },
+            yaxis: { title: 'Longitude' },
+            zaxis: { title: 'Latitude' }
+        },
+        margin: { l: 0, r: 0, b: 0, t: 50 }
+    };
+    Plotly.newPlot('geoPlot', traces, layout);
+}
+
+function renderGeo2DAnimated(points) {
+    // Prepare data for animation by year_month
+    const frames = [];
+    const months = [...new Set(points.map(p => p.year_month).filter(m => m))].sort();
+    const shapes = [...new Set(points.map(p => p.shape).filter(s => s))];
+    
+    for (const month of months) {
+        const pts = points.filter(p => p.year_month === month);
+        const data = shapes.map(shape => {
+            const shapePts = pts.filter(p => p.shape === shape);
+            return {
+                x: shapePts.map(p => p.longitude),
+                y: shapePts.map(p => p.latitude),
+                mode: 'markers',
+                type: 'scatter',
+                name: shape,
+                marker: { size: shapePts.map(p => Math.min(12, p.comment_length / 80)), sizemode: 'area' },
+                text: shapePts.map(p => p.filename)
+            };
+        });
+        frames.push({ name: month, data: data });
+    }
+    
+    const firstFrame = frames[0].data;
+    const layout = {
+        title: 'Incident Map Animation by Month',
+        xaxis: { title: 'Longitude' },
+        yaxis: { title: 'Latitude' },
+        updatemenus: [{
+            type: 'buttons',
+            showactive: false,
+            buttons: [{
+                label: 'Play',
+                method: 'animate',
+                args: [null, { fromcurrent: true, frame: { duration: 500, redraw: true }, transition: { duration: 0 } }]
+            }]
+        }],
+        sliders: [{
+            active: 0,
+            steps: months.map((m, idx) => ({
+                label: m,
+                method: 'animate',
+                args: [[m], { mode: 'immediate', frame: { duration: 0, redraw: true }, transition: { duration: 0 } }]
+            }))
+        }]
+    };
+    Plotly.newPlot('geoPlot', firstFrame, layout).then(() => {
+        Plotly.addFrames('geoPlot', frames);
+    });
+}
+
+async function loadGeoView() {
+    const points = await fetchGeoData();
+    if (!points.length) {
+        document.getElementById('geoPlot').innerHTML = '<div>No geographic data found. Upload CSV with latitude/longitude columns.</div>';
+        return;
+    }
+    if (currentGeoMode === '3d') renderGeo3D(points);
+    else renderGeo2DAnimated(points);
+}
+
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tabId = btn.dataset.tab;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        if (tabId === 'topic') {
+            document.getElementById('topicView').classList.add('active');
+            if (currentPlotData) Plotly.newPlot(scatterDiv, currentPlotData, currentLayout);
+            else renderScatter();
+        } else {
+            document.getElementById('geoView').classList.add('active');
+            loadGeoView();
+        }
+    });
+});
+
+// Mode selector for geo
+document.getElementById('geoMode')?.addEventListener('change', (e) => {
+    currentGeoMode = e.target.value;
+    loadGeoView();
+});
+
+// Call renderScatter as before, and also preload geo data in background
 renderScatter();
+fetchGeoData(); // preload
